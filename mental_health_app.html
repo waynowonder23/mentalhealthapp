@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mental Health Awareness App</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for social media icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* Reset and basic styling */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f2f2f2; color: #333; }
+
+        /* Header styling */
+        header {
+            background: linear-gradient(135deg, #C0C0C0, #FF0000); /* Silver and Red */
+            color: #fff;
+            padding: 50px 20px;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0%, 100% 85%, 0% 100%);
+            position: relative;
+        }
+        header h1 { font-size: 3em; }
+        /* Social media icons */
+        .social-media {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .social-media a {
+            color: #fff;
+            margin-left: 15px;
+            font-size: 1.5em;
+            text-decoration: none;
+        }
+        .social-media a:hover {
+            color: #e0e0e0;
+        }
+
+        /* Navigation tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: #fff;
+            margin-top: -30px;
+        }
+        .tab {
+            cursor: pointer;
+            padding: 15px 20px;
+            margin: 5px;
+            font-weight: 600;
+            color: #555;
+            background: #e6e6e6;
+            border-radius: 25px 25px 0 0;
+            transition: background 0.3s, color 0.3s;
+            outline: none;
+        }
+        .tab:hover, .active {
+            background: #FF0000;
+            color: #fff;
+        }
+
+        /* Content area */
+        .content {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .tab-content.active-content {
+            display: block;
+        }
+        h2 { color: #FF0000; margin-bottom: 20px; }
+        h3 { color: #C0C0C0; margin-bottom: 15px; }
+        p { line-height: 1.8; margin-bottom: 20px; }
+        ul { list-style: none; padding-left: 0; margin-bottom: 20px; }
+        li { margin-bottom: 20px; display: flex; align-items: flex-start; }
+        strong { color: #FF0000; }
+        .video-link {
+            margin-left: auto;
+        }
+        .video-link a {
+            color: #FF0000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .video-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Image styling */
+        .section-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Testimonial styling */
+        .testimonial {
+            background: #f9f9f9;
+            border-left: 5px solid #FF0000;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .testimonial p { margin-bottom: 10px; }
+        .testimonial .author { font-weight: bold; text-align: right; }
+
+        /* Donation bar styling */
+        .donation-bar {
+            background: #e6e6e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .donation-bar button {
+            padding: 10px 20px;
+            background: #FF0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .donation-bar button:hover {
+            background: #cc0000;
+        }
+        .donation-total {
+            font-size: 1.5em;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        /* Accessibility focus outline */
+        .tab:focus, .button:focus {
+            outline: 2px solid #FF0000;
+        }
+
+        /* Resource links */
+        a { color: #FF0000; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Footer disclaimer */
+        footer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+            padding: 20px;
+        }
+
+        /* Keyframes for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            header h1 { font-size: 2em; }
+            .tab { padding: 10px 15px; font-size: 0.9em; }
+            .content { padding: 20px; }
+            li { flex-direction: column; align-items: flex-start; }
+            .video-link { margin-left: 0; margin-top: 10px; }
+            .social-media { top: 10px; right: 10px; }
+            .social-media a { font-size: 1.2em; }
+        }
+    </style>
+    <script>
+        let totalDonations = 0; // Simulated total donations
+
+        function showContent(id) {
+            var contents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active-content');
+                contents[i].setAttribute('aria-hidden', 'true');
+            }
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+                tabs[i].setAttribute('aria-selected', 'false');
+            }
+            document.getElementById(id).classList.add('active-content');
+            document.getElementById(id).setAttribute('aria-hidden', 'false');
+            document.getElementById(id + '-tab').classList.add('active');
+            document.getElementById(id + '-tab').setAttribute('aria-selected', 'true');
+            document.getElementById(id + '-tab').focus();
+            if (id === 'donations') {
+                document.getElementById('donation-total').innerText = '$' + totalDonations.toFixed(2);
+            }
+        }
+
+        function submitQuiz(quizNumber) {
+            var score = 0;
+            var total = 3;
+            var prefix = 'q' + quizNumber + '_';
+            var q1 = document.querySelector('input[name="' + prefix + 'q1"]:checked');
+            var q2 = document.querySelector('input[name="' + prefix + 'q2"]:checked');
+            var q3 = document.querySelector('input[name="' + prefix + 'q3"]:checked');
+
+            if (q1 && q1.value === "a") score++;
+            if (q2 && q2.value === "b") score++;
+            if (q3 && q3.value === "b") score++;
+
+            var result = document.getElementById('quiz' + quizNumber + '-result');
+            result.style.display = 'block';
+
+            if (score === total) {
+                result.innerHTML = "<strong>Great job!</strong> You scored " + score + " out of " + total + ".";
+                result.classList.add('success');
+                result.classList.remove('fail');
+            } else {
+                result.innerHTML = "<strong>Keep learning!</strong> You scored " + score + " out of " + total + ".";
+                result.classList.add('fail');
+                result.classList.remove('success');
+            }
+        }
+
+        // Simulate donation
+        function donate() {
+            let donationAmount = prompt("Enter donation amount:");
+            donationAmount = parseFloat(donationAmount);
+            if (!isNaN(donationAmount) && donationAmount > 0) {
+                totalDonations += donationAmount;
+                alert("Thank you for your donation of $" + donationAmount.toFixed(2) + "!");
+            } else {
+                alert("Invalid donation amount.");
+            }
+        }
+
+        // Keyboard navigation for tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function(tab, index) {
+                tab.setAttribute('tabindex', '0');
+                tab.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowRight') {
+                        var nextTab = tabs[(index + 1) % tabs.length];
+                        nextTab.focus();
+                        nextTab.click();
+                    } else if (e.key === 'ArrowLeft') {
+                        var prevTab = tabs[(index - 1 + tabs.length) % tabs.length];
+                        prevTab.focus();
+                        prevTab.click();
+                    }
+                });
+            });
+            showContent('home');
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Mental Health Matters</h1>
+        <p>Your journey to well-being starts here.</p>
+        <!-- Social Media Icons -->
+        <div class="social-media">
+            <a href="https://www.facebook.com/yourpage" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.twitter.com/yourprofile" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/yourprofile" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/in/yourprofile" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </header>
+    <nav class="tabs" role="tablist">
+        <div class="tab active" id="home-tab" role="tab" aria-selected="true" tabindex="0" onclick="showContent('home')">Home</div>
+        <div class="tab" id="anxiety-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('anxiety')">Anxiety</div>
+        <div class="tab" id="depression-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('depression')">Depression</div>
+        <div class="tab" id="stress-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('stress')">Stress</div>
+        <div class="tab" id="mindfulness-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('mindfulness')">Mindfulness</div>
+        <div class="tab" id="selfesteem-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('selfesteem')">Self-Esteem</div>
+        <div class="tab" id="nutrition-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('nutrition')">Nutrition</div>
+        <div class="tab" id="sleep-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('sleep')">Sleep Hygiene</div>
+        <div class="tab" id="quiz-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('quiz')">Self-Assessment</div>
+        <div class="tab" id="donations-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('donations')">Donations</div>
+        <div class="tab" id="resources-tab" role="tab" aria-selected="false" tabindex="0" onclick="showContent('resources')">Resources</div>
+    </nav>
+    <div class="content">
+        <!-- Home Content -->
+        <div id="home" class="tab-content active-content" role="tabpanel" aria-labelledby="home-tab">
+            <img src="https://via.placeholder.com/900x300?text=Welcome+to+Our+Website" alt="Welcome" class="section-image">
+            <h2>Welcome to Our Mental Health Awareness App</h2>
+            <p>We are a dedicated team committed to raising awareness about mental health. Our mission is to provide resources, support, and a safe space for individuals struggling with mental health issues. Together, we aim to break the stigma and promote well-being for everyone.</p>
+            <div class="donation-bar">
+                <p>Your contributions help us reach more people and provide better resources.</p>
+                <button onclick="donate()">Donate Now</button>
+            </div>
+        </div>
+
+        <!-- Anxiety Content -->
+        <div id="anxiety" class="tab-content" role="tabpanel" aria-labelledby="anxiety-tab">
+            <img src="https://via.placeholder.com/900x300?text=Anxiety" alt="Anxiety" class="section-image">
+            <h2>Anxiety</h2>
+            <p>Anxiety is a normal emotion, but when it becomes excessive, it may lead to disorders that affect daily life.</p>
+            <div class="testimonial">
+                <p>"I've learned to manage my anxiety through mindfulness and deep breathing. It has made a huge difference in my daily life."</p>
+                <div class="author">- Alex</div>
+            </div>
+            <h3>Understanding Anxiety:</h3>
+            <ul>
+                <li><strong>Symptoms:</strong> Restlessness, rapid heartbeat, excessive worry.</li>
+                <li><strong>Causes:</strong> Genetics, brain chemistry, life events.</li>
+                <li><strong>Treatment:</strong> Therapy, medication, lifestyle changes.</li>
+            </ul>
+            <h3>Tips to Manage Anxiety:</h3>
+            <ul>
+                <li>
+                    <strong>Deep Breathing:</strong> Practice techniques like the 4-7-8 method.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=Uxbdx-SeOOo" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Mindfulness Meditation:</strong> Stay grounded in the present moment.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=nmFUDkj1Aq0" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Physical Activity:</strong> Exercise releases tension and boosts mood.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=ml6cT4AZdqI" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Limit Caffeine:</strong> Reduce intake of coffee and energy drinks.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=f9c0snRnM7g" target="_blank">Watch Video</a></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Depression Content -->
+        <div id="depression" class="tab-content" role="tabpanel" aria-labelledby="depression-tab">
+            <img src="https://via.placeholder.com/900x300?text=Depression" alt="Depression" class="section-image">
+            <h2>Depression</h2>
+            <p>Depression affects how you feel, think, and handle daily activities. It’s more than just feeling sad.</p>
+            <div class="testimonial">
+                <p>"Reaching out for help was the best decision I ever made. I'm not alone, and neither are you."</p>
+                <div class="author">- Jamie</div>
+            </div>
+            <h3>Understanding Depression:</h3>
+            <ul>
+                <li><strong>Symptoms:</strong> Persistent sadness, loss of interest, fatigue.</li>
+                <li><strong>Causes:</strong> Biological, psychological, and social factors.</li>
+                <li><strong>Treatment:</strong> Therapy, medication, support groups.</li>
+            </ul>
+            <h3>Tips to Cope with Depression:</h3>
+            <ul>
+                <li>
+                    <strong>Stay Connected:</strong> Social support can improve your mood.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=snz8MLIEJpM" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Healthy Diet:</strong> Nutrition impacts mental health.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=IGg_eGTW4Sc" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Set Routine:</strong> Establish a daily schedule to provide structure.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=YGe3wB-QpAo" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Seek Help:</strong> Professional guidance is important.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=ImiP7cx9m1Q" target="_blank">Watch Video</a></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Stress Content -->
+        <div id="stress" class="tab-content" role="tabpanel" aria-labelledby="stress-tab">
+            <img src="https://via.placeholder.com/900x300?text=Stress+Management" alt="Stress Management" class="section-image">
+            <h2>Stress Management</h2>
+            <p>Stress is a response to challenges and demands. Managing it is crucial for well-being.</p>
+            <div class="testimonial">
+                <p>"Learning to manage my stress has improved my relationships and work life."</p>
+                <div class="author">- Sam</div>
+            </div>
+            <h3>Understanding Stress:</h3>
+            <ul>
+                <li><strong>Symptoms:</strong> Irritability, sleep issues, concentration problems.</li>
+                <li><strong>Causes:</strong> Work, relationships, financial pressures.</li>
+                <li><strong>Treatment:</strong> Relaxation techniques, time management.</li>
+            </ul>
+            <h3>Tips for Managing Stress:</h3>
+            <ul>
+                <li>
+                    <strong>Time Management:</strong> Prioritize tasks and set realistic goals.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=1n3g6i5GBso" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Relaxation Techniques:</strong> Try yoga, tai chi, or deep breathing.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=v7AYKMP6rOE" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Hobbies:</strong> Engage in activities you enjoy to unwind.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=cE3kSse5GBw" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Mindfulness:</strong> Focus on the present to reduce anxiety about the future.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=06M8oBKtvbE" target="_blank">Watch Video</a></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mindfulness Content -->
+        <div id="mindfulness" class="tab-content" role="tabpanel" aria-labelledby="mindfulness-tab">
+            <img src="https://via.placeholder.com/900x300?text=Mindfulness" alt="Mindfulness" class="section-image">
+            <h2>Mindfulness</h2>
+            <p>Mindfulness is the practice of being fully present and engaged in the moment.</p>
+            <div class="testimonial">
+                <p>"Mindfulness has allowed me to appreciate the little things and reduce my stress levels."</p>
+                <div class="author">- Casey</div>
+            </div>
+            <h3>Benefits of Mindfulness:</h3>
+            <ul>
+                <li><strong>Reduces Stress:</strong> Helps manage anxiety and depression.</li>
+                <li><strong>Improves Focus:</strong> Enhances concentration and memory.</li>
+                <li><strong>Emotional Health:</strong> Promotes a positive outlook.</li>
+                <li><strong>Physical Benefits:</strong> Lowers blood pressure and improves sleep.</li>
+            </ul>
+            <h3>Mindfulness Techniques:</h3>
+            <ul>
+                <li>
+                    <strong>Mindful Breathing:</strong> Focus on your breath as it flows in and out.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=SEfs5TJZ6Nk" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Body Scan Meditation:</strong> Pay attention to different parts of your body.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=QS2yDmWk0vs" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Mindful Eating:</strong> Savor each bite and eat without distractions.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=NW1lVJ3AYNE" target="_blank">Watch Video</a></span>
+                </li>
+                <li>
+                    <strong>Walking Meditation:</strong> Be aware of your surroundings and sensations as you walk.
+                    <span class="video-link"><a href="https://www.youtube.com/watch?v=4aQXgsX3wcI" target="_blank">Watch Video</a></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Self-Esteem Content -->
+        <div id="selfesteem" class="tab-content" role="tabpanel" aria-labelledby="selfesteem-tab">
+            <img src="https://via.placeholder.com/900x300?text=Self-Esteem" alt="Self-Esteem" class="section-image">
+            <h2>Self-Esteem</h2>
+            <p>Self-esteem is the opinion we have of ourselves. High self-esteem can lead to a positive outlook, while low self-esteem may make us feel negative.</p>
+            <div class="testimonial">
+                <p>"Building my self-esteem has helped me tackle challenges with confidence."</p>
+                <div class="author">- Taylor</div>
+            </div>
+            <h3>Improving Self-Esteem:</h3>
+            <ul>
+                <li><strong>Positive Affirmations:</strong> Practice daily affirmations to boost confidence.</li>
+                <li><strong>Set Achievable Goals:</strong> Accomplish small tasks to build a sense of achievement.</li>
+                <li><strong>Surround Yourself with Support:</strong> Spend time with people who uplift you.</li>
+                <li><strong>Self-Care:</strong> Engage in activities that make you feel good.</li>
+            </ul>
+        </div>
+
+        <!-- Nutrition Content -->
+        <div id="nutrition" class="tab-content" role="tabpanel" aria-labelledby="nutrition-tab">
+            <img src="https://via.placeholder.com/900x300?text=Nutrition+and+Mental+Health" alt="Nutrition and Mental Health" class="section-image">
+            <h2>Nutrition and Mental Health</h2>
+            <p>What we eat can significantly affect how we feel mentally and emotionally.</p>
+            <div class="testimonial">
+                <p>"Changing my diet improved not just my physical health, but my mental well-being too."</p>
+                <div class="author">- Jordan</div>
+            </div>
+            <h3>Tips for Healthy Eating:</h3>
+            <ul>
+                <li><strong>Balanced Diet:</strong> Include a variety of fruits, vegetables, and whole grains.</li>
+                <li><strong>Stay Hydrated:</strong> Drink plenty of water throughout the day.</li>
+                <li><strong>Limit Sugar and Processed Foods:</strong> Reduce intake of foods high in sugar and additives.</li>
+                <li><strong>Mindful Eating:</strong> Pay attention to what and how you eat.</li>
+            </ul>
+        </div>
+
+        <!-- Sleep Hygiene Content -->
+        <div id="sleep" class="tab-content" role="tabpanel" aria-labelledby="sleep-tab">
+            <img src="https://via.placeholder.com/900x300?text=Sleep+Hygiene" alt="Sleep Hygiene" class="section-image">
+            <h2>Sleep Hygiene</h2>
+            <p>Good sleep is essential for mental and physical health.</p>
+            <div class="testimonial">
+                <p>"Establishing a bedtime routine transformed my energy levels and mood."</p>
+                <div class="author">- Morgan</div>
+            </div>
+            <h3>Tips for Better Sleep:</h3>
+            <ul>
+                <li><strong>Consistent Schedule:</strong> Go to bed and wake up at the same time daily.</li>
+                <li><strong>Sleep Environment:</strong> Keep your bedroom dark, quiet, and comfortable.</li>
+                <li><strong>Limit Screen Time:</strong> Avoid screens at least an hour before bedtime.</li>
+                <li><strong>Relaxation Techniques:</strong> Try reading or gentle stretching before bed.</li>
+            </ul>
+        </div>
+
+        <!-- Self-Assessment Content -->
+        <div id="quiz" class="tab-content" role="tabpanel" aria-labelledby="quiz-tab">
+            <h2>Self-Assessment Quiz</h2>
+            <p>Test your knowledge about mental health topics.</p>
+
+            <!-- Quiz 1 -->
+            <div class="quiz">
+                <h3>Anxiety Quiz</h3>
+                <div class="quiz-question">
+                    <p><strong>1. Which of the following is a common symptom of anxiety?</strong></p>
+                    <label><input type="radio" name="q1_q1" value="a"> Excessive worry</label><br>
+                    <label><input type="radio" name="q1_q1" value="b"> Decreased heart rate</label><br>
+                    <label><input type="radio" name="q1_q1" value="c"> Increased appetite</label>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>2. A healthy way to manage anxiety is:</strong></p>
+                    <label><input type="radio" name="q1_q2" value="a"> Ignoring it</label><br>
+                    <label><input type="radio" name="q1_q2" value="b"> Deep breathing exercises</label><br>
+                    <label><input type="radio" name="q1_q2" value="c"> Overeating</label>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>3. Mindfulness helps by:</strong></p>
+                    <label><input type="radio" name="q1_q3" value="a"> Increasing stress</label><br>
+                    <label><input type="radio" name="q1_q3" value="b"> Focusing on the present</label><br>
+                    <label><input type="radio" name="q1_q3" value="c"> Ignoring problems</label>
+                </div>
+                <button class="button" onclick="submitQuiz(1)">Submit Answers</button>
+                <div id="quiz1-result" class="quiz-result"></div>
+            </div>
+        </div>
+
+        <!-- Donations Content -->
+        <div id="donations" class="tab-content" role="tabpanel" aria-labelledby="donations-tab">
+            <h2>Total Donations Raised</h2>
+            <div class="donation-total" id="donation-total">$0.00</div>
+            <p>Your generosity helps us support mental health initiatives and provide valuable resources to those in need.</p>
+        </div>
+
+        <!-- Resources Content -->
+        <div id="resources" class="tab-content" role="tabpanel" aria-labelledby="resources-tab">
+            <img src="https://via.placeholder.com/900x300?text=Resources" alt="Resources" class="section-image">
+            <h2>Resources</h2>
+            <p>If you or someone you know is struggling, reach out to a mental health professional or explore these resources:</p>
+            <ul>
+                <li><a href="https://www.mentalhealth.gov/" target="_blank">MentalHealth.gov</a> - U.S. government information on mental health.</li>
+                <li><a href="https://www.nami.org/Home" target="_blank">National Alliance on Mental Illness (NAMI)</a> - Support and education.</li>
+                <li><a href="https://www.samhsa.gov/find-help/national-helpline" target="_blank">SAMHSA National Helpline</a> - Free, confidential treatment referral.</li>
+                <li><a href="https://www.headspace.com/" target="_blank">Headspace</a> - Mindfulness and meditation app.</li>
+                <li><a href="https://www.calm.com/" target="_blank">Calm</a> - App for sleep, meditation, and relaxation.</li>
+            </ul>
+            <h3>Emergency Contacts:</h3>
+            <ul>
+                <li><strong>National Suicide Prevention Lifeline:</strong> <a href="tel:1-800-273-8255">1-800-273-8255</a></li>
+                <li><strong>Crisis Text Line:</strong> Text HOME to 741741</li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <p><em>Disclaimer: This app provides general information and is not a substitute for professional medical advice. Please consult a qualified healthcare provider for personalized guidance.</em></p>
+    </footer>
+</body>
+</html>
